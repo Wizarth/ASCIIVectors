@@ -2,9 +2,21 @@ module ASCIIVectors
 
 export ASCIIVector
 
-struct ASCIIVector
-	val::AbstractVector{UInt8}
+struct ASCIIVector{T<:AbstractVector{UInt8}}
+	val::T
 end
+# Type deduction from parameter type
+ASCIIVector(val::T) where {T<:AbstractVector{UInt8}} = ASCIIVector{T}(val)
+# Conversion
+function ASCIIVector(str::AbstractString)
+	v = UInt8[]
+	for c in str
+		push!(v,c)
+	end
+	ASCIIVector(v)	
+end
+# Any AbstractArray that doesn't meet AbtractVector{UInt8} goes through here
+ASCIIVector(val::AbstractArray) = ASCIIVector( convert(Vector{UInt8}, val ) )
 
 import Base: isempty,
 	==,
@@ -19,7 +31,8 @@ import Base: isempty,
 	getindex,
 	IteratorSize,
 	iterate,
-	view
+	view,
+	eltype
 
 isempty(v::ASCIIVector) = isempty(v.val)
 # TODO: Investigate if it's more correct that ASCIIVector should implement promote, then equality falls out through the default implementation
@@ -112,5 +125,6 @@ end
 
 # TODO: This could be calculated, but it would be the same as iterating completely, so...
 IteratorSize(::Type{EachLine}) = Base.SizeUnknown()
+eltype(::Type{ASCIIVector{T}}) where {T} = typeof(view(T,:))
 
 end # module

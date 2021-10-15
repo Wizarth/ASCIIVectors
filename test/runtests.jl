@@ -5,22 +5,26 @@ using ASCIIVectors
 	v = [0x61,0x62,0x63,0x21]
 
 	av = ASCIIVector(v)
-	@test av.val == v
 	@test av == v
 	@test v == av
 
 	av = ASCIIVector( view(v, :) )
-	@test av.val == v
 	@test av == v
 
+	# Convenience string conversion
+	av = ASCIIVector("abc!")
+	@test av == v
+	# Convert Any[] to UInt8[]
 	@test isempty(ASCIIVector([]))
-	@test isempty(ASCIIVector(view([], :)))
+
+	@test isempty(ASCIIVector(UInt8[]))
+	@test isempty(ASCIIVector(view(UInt8[], :)))
 	@test !isempty(ASCIIVector(v))
 	@test !isempty(ASCIIVector(view(v, :)))
 end
 
 @testset "eachline" begin
-	# map is redundant here because ASCIIVector will convert Char down to UInt8
+	# map is redundant here because ASCIIVector will convert Char[] down to UInt8[]
 	v = ['a', 'b', 'c', '\n', 'd', 'e', 'f']
 	linesnoeol = [
 		map(UInt8, ['a', 'b', 'c']),
@@ -31,6 +35,11 @@ end
 		map(UInt8, ['d', 'e', 'f'])
 	]
 	
+	# Doesn't contruct new arrays
+	for line in eachline(ASCIIVector(v))
+		@test line isa SubArray
+	end
+
 	@test collect(eachline(ASCIIVector(v))) == linesnoeol
 	@test collect(eachline(ASCIIVector(v), keep=true)) == lineswitheol
 
