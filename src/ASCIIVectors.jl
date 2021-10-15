@@ -32,7 +32,10 @@ import Base: isempty,
 	IteratorSize,
 	iterate,
 	view,
-	eltype
+	eltype,
+	chomp,
+	strip
+	
 
 isempty(v::ASCIIVector) = isempty(v.val)
 # TODO: Investigate if it's more correct that ASCIIVector should implement promote, then equality falls out through the default implementation
@@ -126,5 +129,29 @@ end
 # TODO: This could be calculated, but it would be the same as iterating completely, so...
 IteratorSize(::Type{EachLine}) = Base.SizeUnknown()
 eltype(::Type{ASCIIVector{T}}) where {T} = typeof(view(T,:))
+
+function chomp(v::ASCIIVector) 
+	r = view(v.val, :)
+	while isnewline(r[end])
+		r = @view r[begin:end-1];
+	end
+	ASCIIVector(r)
+end
+
+isspace(c::UInt8) = c == UInt8(' ') || UInt8('\t') <= c <= UInt8('\r')
+strip(v::ASCIIVector) = strip(isspace, v)
+function strip(pred, v::ASCIIVector)
+	isempty(v) && return v
+	r = view(v.val, :)
+	while pred(r[begin])
+		r = @view r[begin+1:end]
+		isempty(r) && return ASCIIVector(r)
+	end
+	while pred(r[end])
+		r = @view r[begin:end-1]
+		isempty(r) && return ASCIIVector(r)
+	end
+	ASCIIVector(r)
+end
 
 end # module

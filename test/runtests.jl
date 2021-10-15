@@ -74,3 +74,16 @@ end
 	@test collect(eachline(ASCIIVector(v))) == linesnoeol
 	@test collect(eachline(ASCIIVector(v), keep=true)) == lineswitheol
 end
+
+@testset "chomp" begin
+	@test chomp(ASCIIVector("foo\n")).val == ASCIIVector("foo").val
+	@test chomp(ASCIIVector("foo\r\n")).val == ASCIIVector("foo").val
+end
+
+@testset "strip" begin
+	@test strip(ASCIIVector("")).val == ASCIIVector("").val
+	@test strip(ASCIIVector(" ")).val == ASCIIVector("").val
+	@test strip(ASCIIVector("  ")).val == ASCIIVector("").val
+	@test strip(ASCIIVector("   ")).val == ASCIIVector("").val
+	@test strip(ASCIIVector("\t  hi  \n")).val == ASCIIVector("hi").val
+end
