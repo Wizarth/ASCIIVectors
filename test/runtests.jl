@@ -25,14 +25,14 @@ end
 
 @testset "eachline" begin
 	# map is redundant here because ASCIIVector will convert Char[] down to UInt8[]
-	v = ['a', 'b', 'c', '\n', 'd', 'e', 'f']
+	v = b"abc\ndef"
 	linesnoeol = [
-		map(UInt8, ['a', 'b', 'c']),
-		map(UInt8, ['d', 'e', 'f'])
+		b"abc",
+		b"def"
 	]
 	lineswitheol = [
-		map(UInt8, ['a', 'b', 'c', '\n']),
-		map(UInt8, ['d', 'e', 'f'])
+		b"abc\n",
+		b"def"
 	]
 	
 	# Doesn't contruct new arrays
@@ -43,33 +43,33 @@ end
 	@test collect(eachline(ASCIIVector(v))) == linesnoeol
 	@test collect(eachline(ASCIIVector(v), keep=true)) == lineswitheol
 
-	v = ['a', 'b', 'c', '\r', '\n', 'd', 'e', 'f']
+	v = b"abc\r\ndef"
 	lineswitheol = [
-		map(UInt8, ['a', 'b', 'c', '\r', '\n']),
-		map(UInt8, ['d', 'e', 'f'])
+		b"abc\r\n",
+		b"def"
 	]
 	@test collect(eachline(ASCIIVector(v))) == linesnoeol
 	@test collect(eachline(ASCIIVector(v), keep=true)) == lineswitheol
 
-	v = ['a', 'b', 'c', '\r', '\n', 'd', 'e', 'f', '\r', '\n']
+	v = b"abc\r\ndef\r\n"
 	lineswitheol = [
-		map(UInt8, ['a', 'b', 'c', '\r', '\n']),
-		map(UInt8, ['d', 'e', 'f', '\r', '\n'])
+		b"abc\r\n",
+		b"def\r\n"
 	]
 	@test collect(eachline(ASCIIVector(v))) == linesnoeol
 	@test collect(eachline(ASCIIVector(v), keep=true)) == lineswitheol
 
 	# This matches the behavior of eachline under these circumstances
-	v = [ 'a', '\n', '\n', 'b']
+	v = b"a\n\nb"
 	linesnoeol = [
-		[UInt8('a') ],
-		[],
-		[UInt8('b')]
+		b"a",
+		b"",
+		b"b"
 	]
 	lineswitheol = [
-		[UInt8('a'), UInt8('\n') ],
-		[UInt8('\n')],
-		[UInt8('b')]
+		b"a\n",
+		b"\n",
+		b"b"
 	]
 	@test collect(eachline(ASCIIVector(v))) == linesnoeol
 	@test collect(eachline(ASCIIVector(v), keep=true)) == lineswitheol
