@@ -34,7 +34,11 @@ import Base: isempty,
 	view,
 	eltype,
 	chomp,
-	strip
+	strip,
+	isascii,
+	all,
+	iscntrl,
+	split
 	
 
 isempty(v::ASCIIVector) = isempty(v.val)
@@ -51,19 +55,19 @@ prevind(v::ASCIIVector, i::Int) = prevind(v.val,i)
 keys(v::ASCIIVector) = keys(v.val)
 getindex(v::ASCIIVector, i::Int) = getindex(v.val, i)
 view(v::ASCIIVector, r) = view(v.val, r)
+all(p, v::ASCIIVector) = all(p, v.val)
 
 # Target for my purposes
 #
-# eachline
-# chomp
-# strip
-# isascii
-# startswith
-# isempty
-# any
-# iscntrl
-# split
-# popfirst!
+# eachline   - done
+# chomp      - done
+# strip      - done
+# isascii    - done
+# startswith - done
+# isempty    - done
+# any        - done
+# iscntrl    - done
+# split	     - done
 # parse(Float32)
 # occursin(::String, ::UInt8)
 
@@ -128,7 +132,7 @@ end
 
 # TODO: This could be calculated, but it would be the same as iterating completely, so...
 IteratorSize(::Type{EachLine}) = Base.SizeUnknown()
-eltype(::Type{ASCIIVector{T}}) where {T} = typeof(view(T,:))
+eltype(::Type{ASCIIVector{T}}) where {T} = SubArray{Uint8,1}
 
 function chomp(v::ASCIIVector) 
 	r = view(v.val, :)
@@ -152,6 +156,40 @@ function strip(pred, v::ASCIIVector)
 		isempty(r) && return ASCIIVector(r)
 	end
 	ASCIIVector(r)
+end
+
+isascii(c::UInt8) = c < 0x80
+isascii(v::ASCIIVector) = all(isascii, v)
+iscntrl(c::UInt8) = c <= 0x1f || 0x1f <= c <= 0x9f
+
+split(v::ASCIIVector) = split(v, isspace, keepempty=false)
+split(v::ASCIIVector, dlm::Char) = split(v, UInt8(dlm))
+split(v::ASCIIVector, dlm::UInt8) = split(v, (==)(dlm))
+function split(v::ASCIIVector, dlm=isspace; keepempty=true)
+	r = SubArray{UInt8,1,typeof(v.val)}[]
+	i = firstindex(v)
+	
+	next = findnext(
+		dlm,
+		v.val,
+		i
+	)
+	while next != nothing
+		push!(r, view(v, i:prevind(v.val, next)))
+		i = nextind(v.val, next)
+
+		next = findnext(
+			dlm,
+			v.val,
+			i
+		)
+	end
+	push!(r, @view v[i:end])
+	if !keepempty
+		r = filter(v -> !isempty(v), r)
+	end
+
+	return map(ASCIIVector, r)
 end
 
 end # module

@@ -87,3 +87,25 @@ end
 	@test strip(ASCIIVector("   ")).val == ASCIIVector("").val
 	@test strip(ASCIIVector("\t  hi  \n")).val == ASCIIVector("hi").val
 end
+
+@testset "isasii" begin
+	@test isascii(ASCIIVector("abc"))
+	@test !isascii(ASCIIVector(b"abc\xff"))
+end
+
+@testset "iscntrl" begin
+	@test iscntrl('\x01')
+	@test !iscntrl('a')
+end
+
+@testset "split" begin
+	@test split(ASCIIVector("foo,bar,baz"), 'x') == [b"foo,bar,baz"]
+	@test split(ASCIIVector("foo,bar,baz"), ',') == [b"foo",b"bar",b"baz"]
+
+	@test split(ASCIIVector(""), ',') == [b""]
+	@test split(ASCIIVector(","), ',') == [b"",b""]
+	@test split(ASCIIVector(",,"), ',') == [b"",b"",b""]
+
+	@test split(ASCIIVector("a b c")) == [b"a",b"b",b"c"]
+	@test split(ASCIIVector("a  b \t c\n")) == [b"a",b"b",b"c"]
+end
