@@ -8,13 +8,7 @@ end
 # Type deduction from parameter type
 ASCIIVector(val::T) where {T<:AbstractVector{UInt8}} = ASCIIVector{T}(val)
 # Conversion
-function ASCIIVector(str::AbstractString)
-	v = UInt8[]
-	for c in str
-		push!(v,c)
-	end
-	ASCIIVector(v)	
-end
+ASCIIVector(str::AbstractString) = ASCIIVector(Base.CodeUnits(str))
 # Any AbstractArray that doesn't meet AbtractVector{UInt8} goes through here
 ASCIIVector(val::AbstractArray) = ASCIIVector( convert(Vector{UInt8}, val ) )
 
@@ -38,15 +32,16 @@ import Base: isempty,
 	isascii,
 	all,
 	iscntrl,
-	split
+	split,
+	convert,
+	promote_rule
 	
 
 isempty(v::ASCIIVector) = isempty(v.val)
-# TODO: Investigate if it's more correct that ASCIIVector should implement promote, then equality falls out through the default implementation
+# The default == implementation doesn't promote, so implement our own
 (==)(a::ASCIIVector, b::AbstractArray) = (==)(a.val, b)
 (==)(a::AbstractArray, b::ASCIIVector) = (==)(a, b.val)
 
-startswith(v::ASCIIVector, c) = startswith(v.val, c)
 endswith(v::ASCIIVector, c) = endswith(v.val, c)
 firstindex(v::ASCIIVector) = firstindex(v.val)
 lastindex(v::ASCIIVector) = lastindex(v.val)
@@ -56,6 +51,8 @@ keys(v::ASCIIVector) = keys(v.val)
 getindex(v::ASCIIVector, i::Int) = getindex(v.val, i)
 view(v::ASCIIVector, r) = view(v.val, r)
 all(p, v::ASCIIVector) = all(p, v.val)
+convert(t::Type{Any}, v::ASCIIVector) = convert(t, v.val)
+promote_rule(::Type{ASCIIVector{T}}, t::Type) where {T} = promote_rule(T, t)
 
 # Target for my purposes
 #
@@ -161,6 +158,9 @@ end
 isascii(c::UInt8) = c < 0x80
 isascii(v::ASCIIVector) = all(isascii, v)
 iscntrl(c::UInt8) = c <= 0x1f || 0x1f <= c <= 0x9f
+
+startswith(v::ASCIIVector, prefix::AbstractString) = startswith(v, Base.CodeUnits(s))
+startswith(v::ASCIIVector, prefix::AbstractVector{UInt8}) = any((==)(v.val[begin]), prefix)
 
 split(v::ASCIIVector) = split(v, isspace, keepempty=false)
 split(v::ASCIIVector, dlm::Char) = split(v, UInt8(dlm))

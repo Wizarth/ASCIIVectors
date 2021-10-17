@@ -109,3 +109,10 @@ end
 	@test split(ASCIIVector("a b c")) == [b"a",b"b",b"c"]
 	@test split(ASCIIVector("a  b \t c\n")) == [b"a",b"b",b"c"]
 end
+
+@testset "startswith" begin
+	@test startswith(ASCIIVector("foo"), b"f")
+	@test startswith(ASCIIVector("foo"), b"abcdef")
+	@test startswith(ASCIIVector("foo"), "f")
+	@test startswith(ASCIIVector("foo"), "abcdef")
+end
