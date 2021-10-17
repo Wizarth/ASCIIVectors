@@ -165,7 +165,7 @@ startswith(v::ASCIIVector, prefix::AbstractVector{UInt8}) = any((==)(v.val[begin
 split(v::ASCIIVector) = split(v, isspace, keepempty=false)
 split(v::ASCIIVector, dlm::Char) = split(v, UInt8(dlm))
 split(v::ASCIIVector, dlm::UInt8) = split(v, (==)(dlm))
-function split(v::ASCIIVector, dlm=isspace; keepempty=true)
+function split(v::ASCIIVector, dlm; keepempty=true)
 	r = SubArray{UInt8,1,typeof(v.val)}[]
 	i = firstindex(v)
 	
