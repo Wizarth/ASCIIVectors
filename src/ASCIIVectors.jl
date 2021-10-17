@@ -5,8 +5,6 @@ export ASCIIVector
 struct ASCIIVector{T<:AbstractVector{UInt8}}
 	val::T
 end
-# Type deduction from parameter type
-ASCIIVector(val::T) where {T<:AbstractVector{UInt8}} = ASCIIVector{T}(val)
 # Conversion
 ASCIIVector(str::AbstractString) = ASCIIVector(Base.CodeUnits(str))
 # Any AbstractArray that doesn't meet AbtractVector{UInt8} goes through here
