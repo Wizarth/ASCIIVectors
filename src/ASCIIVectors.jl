@@ -88,7 +88,7 @@ end
 isnotnewline(c) = !isnewline(c)
 
 function iterate(itr::EachLine, pos=findnext(isnotnewline, itr.vec, firstindex(itr.vec)) )
-	pos == nothing && return nothing
+	pos === nothing && return nothing
 
 	eol = findnext(
 		isnewline,
@@ -96,7 +96,7 @@ function iterate(itr::EachLine, pos=findnext(isnotnewline, itr.vec, firstindex(i
 		pos
 	)
 	# No newline found, return to the end of the array
-	if eol == nothing
+	if eol === nothing
 		return (
 			ASCIIVector(view(itr.vec, pos:lastindex(itr.vec))),
 			nothing
@@ -174,7 +174,7 @@ function split(v::ASCIIVector, dlm; keepempty=true)
 		v.val,
 		i
 	)
-	while next != nothing
+	while next !== nothing
 		push!(r, view(v, i:prevind(v.val, next)))
 		i = nextind(v.val, next)
 
