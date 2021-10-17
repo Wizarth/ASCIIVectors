@@ -101,7 +101,7 @@ function iterate(itr::EachLine, pos=findnext(isnotnewline, itr.vec, firstindex(i
 	# No newline found, return to the end of the array
 	if eol == nothing
 		return (
-			view(itr.vec, pos:lastindex(itr.vec)),
+			ASCIIVector(view(itr.vec, pos:lastindex(itr.vec))),
 			nothing
 		)
 	end
@@ -127,7 +127,7 @@ function iterate(itr::EachLine, pos=findnext(isnotnewline, itr.vec, firstindex(i
 	if pos > lastindex(itr.vec)
 		pos = nothing
 	end
-	(v, pos)
+	(ASCIIVector(v), pos)
 end
 
 # TODO: This could be calculated, but it would be the same as iterating completely, so...

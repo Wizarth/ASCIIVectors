@@ -37,7 +37,7 @@ end
 	
 	# Doesn't contruct new arrays
 	for line in eachline(ASCIIVector(v))
-		@test line isa SubArray
+		@test line isa ASCIIVector
 	end
 
 	@test collect(eachline(ASCIIVector(v))) == linesnoeol
