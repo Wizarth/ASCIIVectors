@@ -126,3 +126,9 @@ end
 @testset "length" begin
 	@test length(ASCIIVector("abc!")) == 4
 end
+
+@testset "copy" begin
+	a = ASCIIVector("a")
+	b = copy(a)
+	@test a !== b
+end

@@ -34,7 +34,8 @@ import Base: isempty,
 	convert,
 	promote_rule,
 	size,
-	length
+	length,
+	copy
 	
 
 isempty(v::ASCIIVector) = isempty(v.val)
@@ -55,6 +56,7 @@ convert(t::Type{Any}, v::ASCIIVector) = convert(t, v.val)
 promote_rule(::Type{ASCIIVector{T}}, t::Type) where {T} = promote_rule(T, t)
 size(v::ASCIIVector) = size(v.val)
 length(v::ASCIIVector) = length(v.val)
+copy(v::ASCIIVector) = ASCIIVector(copy(v.val))
 
 # Target for my purposes
 #
