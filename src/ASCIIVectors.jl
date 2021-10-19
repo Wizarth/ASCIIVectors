@@ -32,7 +32,8 @@ import Base: isempty,
 	iscntrl,
 	split,
 	convert,
-	promote_rule
+	promote_rule,
+	size
 	
 
 isempty(v::ASCIIVector) = isempty(v.val)
@@ -51,6 +52,7 @@ view(v::ASCIIVector, r) = view(v.val, r)
 all(p, v::ASCIIVector) = all(p, v.val)
 convert(t::Type{Any}, v::ASCIIVector) = convert(t, v.val)
 promote_rule(::Type{ASCIIVector{T}}, t::Type) where {T} = promote_rule(T, t)
+size(v::ASCIIVector) = size(v.val)
 
 # Target for my purposes
 #

@@ -116,3 +116,7 @@ end
 	@test startswith(ASCIIVector("foo"), "f")
 	@test startswith(ASCIIVector("foo"), "abcdef")
 end
+
+@testset "size" begin
+	@test size(ASCIIVector("abc!")) == (4,)
+end
