@@ -110,6 +110,9 @@ end
 
 	@test split(ASCIIVector("a b c")) == [b"a",b"b",b"c"]
 	@test split(ASCIIVector("a  b \t c\n")) == [b"a",b"b",b"c"]
+
+	# Ensure split on a view works
+	@test split(ASCIIVector(view(b"mtllib cat.mtl",:))) == [b"mtllib", b"cat.mtl"]
 end
 
 @testset "startswith" begin

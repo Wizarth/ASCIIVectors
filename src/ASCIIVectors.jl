@@ -35,7 +35,9 @@ import Base: isempty,
 	promote_rule,
 	size,
 	length,
-	copy
+	copy,
+	show,
+	print
 	
 
 isempty(v::ASCIIVector) = isempty(v.val)
@@ -57,6 +59,14 @@ promote_rule(::Type{ASCIIVector{T}}, t::Type) where {T} = promote_rule(T, t)
 size(v::ASCIIVector) = size(v.val)
 length(v::ASCIIVector) = length(v.val)
 copy(v::ASCIIVector) = ASCIIVector(copy(v.val))
+function show(io::IO, v::ASCIIVector)
+	write(io, "ASCIIVector(")
+	show(io, v.val)
+	write(io, ")")
+end
+function print(io::IO, v::ASCIIVector)
+	print(io, String(copy(v.val)))
+end
 
 # Target for my purposes
 #
@@ -170,7 +180,7 @@ split(v::ASCIIVector) = split(v, isspace, keepempty=false)
 split(v::ASCIIVector, dlm::Char) = split(v, UInt8(dlm))
 split(v::ASCIIVector, dlm::UInt8) = split(v, (==)(dlm))
 function split(v::ASCIIVector, dlm; keepempty=true)
-	r = SubArray{UInt8,1,typeof(v.val)}[]
+	r = []
 	i = firstindex(v)
 	
 	next = findnext(
