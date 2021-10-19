@@ -44,6 +44,8 @@ isempty(v::ASCIIVector) = isempty(v.val)
 # The default == implementation doesn't promote, so implement our own
 (==)(a::ASCIIVector, b::AbstractArray) = (==)(a.val, b)
 (==)(a::AbstractArray, b::ASCIIVector) = (==)(a, b.val)
+(==)(a::AbstractString, b::ASCIIVector) = (==)(Base.CodeUnits(a), b)
+(==)(a::ASCIIVector, b::AbstractString) = (==)(a, Base.CodeUnits(b))
 
 endswith(v::ASCIIVector, c) = endswith(v.val, c)
 firstindex(v::ASCIIVector) = firstindex(v.val)

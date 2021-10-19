@@ -21,6 +21,11 @@ using ASCIIVectors
 	@test isempty(ASCIIVector(view(UInt8[], :)))
 	@test !isempty(ASCIIVector(v))
 	@test !isempty(ASCIIVector(view(v, :)))
+
+	v = "abc!"
+	av = ASCIIVector(v)
+	@test v == av
+	@test av == v
 end
 
 @testset "eachline" begin
