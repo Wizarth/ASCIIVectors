@@ -37,7 +37,8 @@ import Base: isempty,
 	length,
 	copy,
 	show,
-	print
+	print,
+	parse
 	
 
 isempty(v::ASCIIVector) = isempty(v.val)
@@ -69,6 +70,7 @@ end
 function print(io::IO, v::ASCIIVector)
 	print(io, String(copy(v.val)))
 end
+parse(t::Type, v::ASCIIVector) = parse(t, String(copy(v.val)))
 
 # Target for my purposes
 #

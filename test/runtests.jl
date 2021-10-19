@@ -140,3 +140,7 @@ end
 	b = copy(a)
 	@test a !== b
 end
+
+@testset "parse" begin
+	@test parse(Float32, ASCIIVector("0")) == 0
+end
