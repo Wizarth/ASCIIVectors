@@ -38,7 +38,8 @@ import Base: isempty,
 	copy,
 	show,
 	print,
-	parse
+	parse,
+	occursin
 	
 
 isempty(v::ASCIIVector) = isempty(v.val)
@@ -208,6 +209,32 @@ function split(v::ASCIIVector, dlm; keepempty=true)
 	end
 
 	return map(ASCIIVector, r)
+end
+
+occursin(needle::AbstractString, haystack::ASCIIVector) = occursin(Base.CodeUnits(needle), haystack)
+function occursin(needle::AbstractVector{UInt8}, haystack::ASCIIVector)
+	matchstart = (==)(needle[begin])
+	
+	n = findnext(
+		matchstart,
+		haystack.val,
+		firstindex(haystack)
+	)
+	while n !== nothing
+		match = true
+		for j in 2:length(needle)
+			match &= haystack.val[n+(j-1)] == needle[j]
+			match || break
+		end
+		match && return true
+		n = findnext(
+			matchstart,
+			haystack.val,
+			nextind(haystack, n)
+		)
+	end
+	
+	return false
 end
 
 end # module

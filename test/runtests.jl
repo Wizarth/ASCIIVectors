@@ -144,3 +144,8 @@ end
 @testset "parse" begin
 	@test parse(Float32, ASCIIVector("0")) == 0
 end
+
+@testset "occursin" begin
+	@test !occursin("foo", ASCIIVector("abc!"))
+	@test occursin("bc", ASCIIVector("abc!"))
+end
