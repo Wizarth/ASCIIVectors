@@ -159,7 +159,7 @@ end
 
 isascii(c::UInt8) = c < 0x80
 isascii(v::ASCIIVector) = all(isascii, v)
-iscntrl(c::UInt8) = c <= 0x1f || 0x1f <= c <= 0x9f
+iscntrl(c::UInt8) = c <= 0x1f || 0x7f <= c <= 0x9f
 
 startswith(v::ASCIIVector, prefix::AbstractString) = startswith(v, Base.CodeUnits(prefix))
 startswith(v::ASCIIVector, prefix::AbstractVector{UInt8}) = any((==)(v.val[begin]), prefix)
