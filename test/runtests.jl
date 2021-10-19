@@ -120,3 +120,7 @@ end
 @testset "size" begin
 	@test size(ASCIIVector("abc!")) == (4,)
 end
+
+@testset "length" begin
+	@test length(ASCIIVector("abc!")) == 4
+end

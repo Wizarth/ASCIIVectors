@@ -33,7 +33,8 @@ import Base: isempty,
 	split,
 	convert,
 	promote_rule,
-	size
+	size,
+	length
 	
 
 isempty(v::ASCIIVector) = isempty(v.val)
@@ -53,6 +54,7 @@ all(p, v::ASCIIVector) = all(p, v.val)
 convert(t::Type{Any}, v::ASCIIVector) = convert(t, v.val)
 promote_rule(::Type{ASCIIVector{T}}, t::Type) where {T} = promote_rule(T, t)
 size(v::ASCIIVector) = size(v.val)
+length(v::ASCIIVector) = length(v.val)
 
 # Target for my purposes
 #
